@@ -1,5 +1,10 @@
 # fedora-hardened
 
+## Notice
+
+- This script only supports Fedora 38 until further notice.
+- This script is in *alpha*, **use at your own risk**.
+
 ## What
 
 This is a script that hardens the default fedora installation significantly using the following modifications:
