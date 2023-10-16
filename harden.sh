@@ -61,4 +61,15 @@ dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/bra
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 dnf install -y brave-browser
 
+echo "Building hardened_malloc..."
+dnf install rpm-build rpmdevtools rpmlint gcc make g++
+rm -r fedora-extras
+git clone https://github.com/rusty-snake/fedora-extras.git
+cd fedora-extras
+./rpmbuild.sh hardened_malloc
+
+echo "Installing hardened_malloc"
+dnf install hardened_malloc*.rpm
+cp -f ./config/ld.so.preload /etc/
+
 echo "Complete. Reboot your system for changes to take effect."
