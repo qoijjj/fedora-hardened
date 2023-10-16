@@ -4,6 +4,7 @@
 
 - This script only supports Fedora 38 until further notice.
 - This script is in *alpha*, **use at your own risk**.
+- Not compatible with nvidia because kernel-sources packages aren't available from the copr.
 
 ## What
 
