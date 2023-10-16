@@ -8,24 +8,37 @@ fi
 echo "Ensuring dnf plugins are installed"
 dnf install -y dnf-plugins-core
 
-echo "Installing the Arch hardened kernel from a copr..."
-dnf copr enable samsepi0l/HardHatOS
-dnf install kernel-hardened
 
+echo "Installing the Arch hardened kernel from a copr..."
+dnf copr enable -y samsepi0l/HardHatOS
+dnf install -y kernel-hardened
+
+
+echo "Ensuring openssl is installed"
+dnf install -y openssl
+MOK=./MOK.key
+if test -f "$MOK"; then
+    echo "$MOK exists, skipping MOK generation step."
+else
 echo "Generating new MOK..."
 openssl req -newkey rsa:4096 -nodes -keyout MOK.key -new -x509 -sha256 -days 3650 -subj "/CN=my Machine Owner Key/" -out MOK.crt
 openssl x509 -outform DER -in MOK.crt -out MOK.cer
 
 echo "Importing MOK..."
 mokutil --import MOK.cer
+fi
 
 echo "Signing vmlinuz..."
-latest_vmlinuz=$(find /boot -name 'vmlinuz*' 2>&1 | xargs ls -t1 2>&1 | head -n 1)
+latest_vmlinuz=$(find /boot -name 'vmlinuz*hardened')
 sbsign --key MOK.key --cert MOK.crt --output $latest_vmlinuz $latest_vmlinuz
 
 echo "Signing bootloader..."
 grub_efi_location="/boot/efi/EFI/fedora/grubx64.efi"
 sbsign --key MOK.key --cert MOK.crt --output $grub_efi_location $grub_efi_location
+
+echo "Signing shim..."
+shim_efi_location="/boot/efi/EFI/BOOT/BOOTX64.EFI"
+sbsign --key MOK.key --cert MOK.crt --output $shim_efi_location $shim_efi_location
 
 echo "Setting numerous hardened sysctl values..."
 cp ./config/hardening.conf /etc/sysctl.d/
@@ -62,14 +75,15 @@ rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 dnf install -y brave-browser
 
 echo "Building hardened_malloc..."
-dnf install rpm-build rpmdevtools rpmlint gcc make g++
+dnf install -y rpm-build rpmdevtools rpmlint gcc make g++
 rm -r fedora-extras
 git clone https://github.com/rusty-snake/fedora-extras.git
 cd fedora-extras
 ./rpmbuild.sh hardened_malloc
 
 echo "Installing hardened_malloc"
-dnf install hardened_malloc*.rpm
+dnf install -y hardened_malloc*.rpm
+cd ..
 cp -f ./config/ld.so.preload /etc/
 
 echo "Complete. Reboot your system for changes to take effect."
