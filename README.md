@@ -23,7 +23,7 @@ This is a script that hardens the default fedora installation significantly usin
 - Installing dnf-automatic and chkrootkit
 - Sets numerous hardening kernel parameters (Inspired by [Madaidan's Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html))
 - Installs and enables [hardened_malloc](https://github.com/GrapheneOS/hardened_malloc) globally
-- Installing Brave Browser and its rpm repo (Unfortunately, the Fedora Chromium rpm is consistently behind security patches, so Brave provides an up-to-date [Chromium-based browser](https://madaidans-insecurities.github.io/firefox-chromium.html). Brave also has content blocking built-in, avoiding the need for [MV2 extensions](https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388))
+- ~~ Installing Brave Browser and its rpm repo (Unfortunately, the Fedora Chromium rpm is consistently behind security patches, so Brave provides an up-to-date [Chromium-based browser](https://madaidans-insecurities.github.io/firefox-chromium.html). Brave also has content blocking built-in, avoiding the need for [MV2 extensions](https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388)) ~~
 
 ## Why
 
